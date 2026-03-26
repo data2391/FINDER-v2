@@ -87,4 +87,4 @@ FINDER/
 
 ---
 
-*FINDER v2.0 | © 2024 Data2391 | Sonar OSINT*
+*FINDER v2.0 | © 2026 Data2391 | Sonar OSINT*
