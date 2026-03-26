@@ -67,14 +67,21 @@ Alternative : http://127.0.0.1:8000
 ## 📁 STRUCTURE DU PROJET
 
 ```
-FINDER/
+FINDER-v2/
 ├── install_finder.bat     # Installeur Windows
 ├── install_finder.sh      # Installeur Linux/macOS
 ├── LANCER_FINDER.bat      # Lanceur rapide Windows
-├── finder/                # Coeur (Scraper Playwright + Interface Flask)
-└── venv/                  # Isolation de sécurité (géré par l'installateur)
+├── finder/                # Coeur de l'application
+│   ├── server.py            ← Serveur Flask (port 8000)
+│   ├── scraper.py           ← Scraper Playwright (Google Dorks + Whitepages)
+│   ├── requirements.txt
+│   ├── templates/
+│   │   └── index.html         ← Interface principale
+│   └── static/
+│       ├── style.css
+│       └── script.js
+└── venv/                  # Isolation de securite (gere par l'installateur)
 ```
-
 ---
 
 ## ⚖️ DISCLAIMER : LE BOUCLIER DE L'ARCHITECTE
