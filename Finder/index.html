@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FINDER v2.0</title>
+  <link rel="stylesheet" href="/static/style.css"/>
+</head>
+<body>
+
+<!-- ═══ FAQ MODAL ═══ -->
+<div id="faqOverlay" class="faq-overlay hidden" onclick="closeFAQ(event)">
+  <div class="faq-box">
+    <button class="faq-close" onclick="document.getElementById('faqOverlay').classList.add('hidden')">✕</button>
+    <h2>📂🕵️ Comment ça fonctionne ?</h2>
+    <details open>
+      <summary>📂🕵️‍♂️ C'est quoi ?</summary>
+      <p>FINDER v2.0 n'est pas un moteur de recherche, c'est un <strong>sonar OSINT</strong>. Il scanne les angles morts du web pour extraire l'identité réelle de ceux qui se cachent derrière des pseudos ou des titres de fonction.</p>
+    </details>
+    <details>
+      <summary>🛠️⛓️ Par qui ?</summary>
+      <p>Conçu et déployé par <strong>Data2391</strong>. Né de la destruction par le système, recréé pour le surveiller. Passionné par la tech, la cybersécurité et la fin de l'impunité numérique.</p>
+    </details>
+    <details>
+      <summary>🎯🌪️ Comment l'utiliser ?</summary>
+      <ul>
+        <li><strong>Nom Prénom / Prénom Nom</strong> : Extraction civile complète.</li>
+        <li><strong>Pseudo</strong> : Lier l'avatar numérique à l'humain physique.</li>
+        <li><strong>Nom d'entreprise</strong> : Cartographier les réseaux.</li>
+      </ul>
+    </details>
+    <details>
+      <summary>🚫👁️ Le bouton [ 👁 ] ?</summary>
+      <p>Masquez instantanément les catégories inutiles pour vous concentrer sur les preuves critiques. Le temps est une ressource.</p>
+    </details>
+    <details>
+      <summary>🤖 Et les CAPTCHAs ?</summary>
+      <p>FINDER ouvre un navigateur <strong>visible</strong>. Si un CAPTCHA apparaît, une alerte s'affiche ici. Résolvez-le dans la fenêtre du navigateur, puis cliquez <strong>J'ai résolu</strong>.</p>
+    </details>
+  </div>
+</div>
+
+<!-- ═══ CAPTCHA MODAL ═══ -->
+<div id="captchaModal" class="captcha-overlay hidden">
+  <div class="captcha-box">
+    <div class="captcha-icon">🤖</div>
+    <h3>CAPTCHA détecté</h3>
+    <p>Un CAPTCHA est apparu sur <strong id="captchaCategory">—</strong>.</p>
+    <p class="captcha-sub">Résolvez-le dans la <strong>fenêtre du navigateur</strong> qui est ouverte,<br/>puis cliquez sur le bouton ci-dessous.</p>
+    <button id="captchaAckBtn" class="captcha-btn">✅ J'ai résolu le CAPTCHA</button>
+    <button class="captcha-skip" onclick="skipCaptcha()">⏭ Ignorer cette catégorie</button>
+  </div>
+</div>
+
+<!-- ═══ IMAGE ZOOM MODAL ═══ -->
+<div id="imgModal" class="img-modal hidden" onclick="closeImgModal()">
+  <div class="img-modal-inner" onclick="event.stopPropagation()">
+    <button class="img-modal-close" onclick="closeImgModal()">✕</button>
+    <img id="imgModalSrc" src="" alt=""/>
+    <div id="imgModalCaption" class="img-modal-caption"></div>
+    <a id="imgModalLink" href="#" target="_blank" rel="noopener" class="img-modal-link">Ouvrir la source ↗</a>
+  </div>
+</div>
+
+<!-- ═══ HEADER ═══ -->
+<header id="header">
+  <div class="header-inner">
+    <div class="logo-wrap">
+      <span class="logo-f">F</span><span class="logo-i">I</span><span class="logo-n">N</span><span class="logo-d">D</span><span class="logo-e">E</span><span class="logo-r">R</span>
+      <sup class="logo-ver">v2.0</sup>
+    </div>
+    <button class="faq-btn" onclick="document.getElementById('faqOverlay').classList.remove('hidden')">
+      👁 Comment ça fonctionne ?
+    </button>
+  </div>
+  <div class="search-wrap" id="searchWrap">
+    <form id="searchForm" onsubmit="doSearch(event)">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="queryInput" placeholder="Nom Prénom · Pseudo · Entreprise" autocomplete="off" spellcheck="false"/>
+        <button type="button" class="clear-btn" onclick="clearSearch()">✕</button>
+        <button type="submit" class="submit-btn">Rechercher</button>
+      </div>
+    </form>
+    <nav class="search-tabs">
+      <span class="tab active" onclick="filterTab('all',this)">Tout</span>
+      <span class="tab" onclick="filterTab('people',this)">Personnes</span>
+      <span class="tab" onclick="filterTab('images',this)">Images</span>
+      <span class="tab" onclick="filterTab('social',this)">Réseaux Sociaux</span>
+      <span class="tab" onclick="filterTab('whitepages',this)">Whitepages</span>
+    </nav>
+  </div>
+</header>
+
+<!-- ═══ MAIN ═══ -->
+<main id="main">
+  <section id="hero">
+    <div class="hero-logo">
+      <span class="logo-f">F</span><span class="logo-i">I</span><span class="logo-n">N</span><span class="logo-d">D</span><span class="logo-e">E</span><span class="logo-r">R</span>
+    </div>
+    <p class="hero-sub">Sonar OSINT · Extraction d'identité · Intelligence numérique</p>
+    <form onsubmit="doSearch(event)" class="hero-form">
+      <div class="hero-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="heroInput" placeholder="Nom Prénom · Pseudo · Entreprise" autocomplete="off" spellcheck="false"/>
+        <button type="submit">Rechercher</button>
+      </div>
+    </form>
+  </section>
+
+  <div id="loader" class="hidden">
+    <div class="loader-bar"></div>
+    <p id="loaderMsg">🔎 Scan OSINT en cours…</p>
+    <div class="loader-steps" id="loaderSteps">
+      <span class="step" id="s-linkedin">💼 LinkedIn</span>
+      <span class="step" id="s-instagram">📸 Instagram</span>
+      <span class="step" id="s-facebook">📘 Facebook</span>
+      <span class="step" id="s-twitter">🐦 X/Twitter</span>
+      <span class="step" id="s-vk">🅥 VK</span>
+      <span class="step" id="s-images">🖼️ Images</span>
+      <span class="step" id="s-whitepages">📞 Whitepages</span>
+    </div>
+  </div>
+
+  <div id="errorBox" class="hidden error-box"></div>
+  <section id="results" class="hidden">
+    <div id="resultsGrid" class="results-grid"></div>
+  </section>
+</main>
+
+<footer>FINDER v2.0 &copy; 2026 — Data2391 · Usage OSINT uniquement</footer>
+<script src="/static/script.js"></script>
+</body>
+</html>
